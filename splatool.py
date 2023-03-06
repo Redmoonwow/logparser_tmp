@@ -128,7 +128,7 @@ def func_ChangePrimaryPlayer(message_dict):
 	global MY_PC
 	MY_PC.loc[0,"ID"]	= format(message_dict["charID"],"X")
 	MY_PC.loc[0,"name"]	= message_dict["charName"]
-	json_fd = open("splatool\\json\\" + datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9))).strftime("%Y%m%d%H%M%S") + "_ChangePrimaryPlayer_data.json","w",encoding="utf-8")
+	json_fd = open("E:\\works\\1.projects\\svn\\logparser\\json\\" + datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9))).strftime("%Y%m%d%H%M%S") + "_ChangePrimaryPlayer_data.json","w",encoding="utf-8")
 	json_fd.write(json.dumps(message_dict, indent=4))
 	json_fd.close()
 	return
@@ -137,7 +137,7 @@ def func_ChangeZone(message_dict):
 	global ZoneID
 	global fg_PT_setup_done
 	ZoneID = message_dict["zoneID"]
-	json_fd = open("splatool\\json\\" + datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9))).strftime("%Y%m%d%H%M%S") + "_" + message_dict["zoneName"] + "_ChangeZone_data.json","w",encoding="utf-8")
+	json_fd = open("E:\\works\\1.projects\\svn\\logparser\\json\\" + datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9))).strftime("%Y%m%d%H%M%S") + "_" + message_dict["zoneName"] + "_ChangeZone_data.json","w",encoding="utf-8")
 	json_fd.write(json.dumps(message_dict, indent=4))
 	json_fd.close()
 	fg_PT_setup_done = False
@@ -157,7 +157,7 @@ def func_PartyChanged(message_dict):
 		PT_array.loc[i,"JOB"] = JOBLIST[format(data["job"],"X")]
 		PT_array.loc[i,"PRIO"] = JOBPRIO[PT_array["JOB"][i]]
 		i += 1
-	json_fd = open("splatool\\json\\" + datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9))).strftime("%Y%m%d%H%M%S") + "_PartyChanged_data.json","w",encoding="utf-8")
+	json_fd = open("E:\\works\\1.projects\\svn\\logparser\\json\\" + datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9))).strftime("%Y%m%d%H%M%S") + "_PartyChanged_data.json","w",encoding="utf-8")
 	json_fd.write(json.dumps(message_dict, indent=4))
 	json_fd.close()
 	return
@@ -209,7 +209,7 @@ def func_LogLine(message_dict):
 			if ((int(linedata[3]) != fg_combat) and (fg_PT_setup_done == True)):
 				fg_combat = int(linedata[3])
 				if 1 == int(linedata[3]):
-					gimmick_fd = open("splatool\\gimmick_file\\" + datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9))).strftime("%Y%m%d%H%M%S") + "_gimmick_data.log","w",encoding="utf-8")
+					gimmick_fd = open("E:\\works\\1.projects\\svn\\logparser\\gimmick_file\\" + datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9))).strftime("%Y%m%d%H%M%S") + "_gimmick_data.log","w",encoding="utf-8")
 					fg_gimmkck_open_fd = True
 					gimmick_fd.write("---------------戦闘開始---------------\n")
 					print("-----戦闘開始-----")
@@ -221,7 +221,7 @@ def func_LogLine(message_dict):
 					print("-----戦闘終了-----")
 			return
 		case 38:
-			if((True == PT_array[PT_array["ID"] == linedata[2]].empty) and (fg_PT_setup_done == True)):
+			if((True == PT_array[PT_array["ID"] == linedata[2]].empty) or (fg_PT_setup_done == False)):
 				return
 			else:
 				ok = 1
@@ -231,7 +231,7 @@ def func_LogLine(message_dict):
 			PT_array.loc[PT_array["ID"] == linedata[2],"z"] = linedata[13]
 			return
 		case 39:
-			if((True == PT_array[PT_array["ID"] == linedata[2]].empty) and (fg_PT_setup_done == True)):
+			if((True == PT_array[PT_array["ID"] == linedata[2]].empty) or (fg_PT_setup_done == False)):
 				return
 			else:
 				ok = 1
@@ -350,11 +350,11 @@ def main():
 #				func_getCombatants(data)
 
 def damy_main():
-	log_p = open(r"E:\logs\Network_26800_20230228.log",encoding = "utf-8")
-	pchg_data = open("E:\\works\\80.repos\\splatool\\json\\20230301091033_ChangePrimaryPlayer_data_t.json")
-	PTchg_data = '{"type": "PartyChanged", "party": [{"id": "102AE487", "name": "An Hermit", "worldId": 52, "job": 40, "level": 90, "inParty": "True"}, {"id": "102AAE60", "name": "Amelia Wiliams", "worldId": 60, "job": 33, "level": 90, "inParty": "True"}, {"id": "10306755", "name": "Fata Moshroca", "worldId": 52, "job": 30, "level": 90, "inParty": "True"}, {"id": "10337897", "name": "Layla Magnolia", "worldId": 52, "job": 37, "level": 90, "inParty": "True"}, {"id": "10265C76", "name": "Eko Micare", "worldId": 60, "job": 35, "level": 90, "inParty": "True"}, {"id": "1029735D", "name": "Meltz Zacker", "worldId": 60, "job": 32, "level": 90, "inParty": "True"}, {"id": "1005FA50", "name": "Redmoon Rynde", "worldId": 59, "job": 31, "level": 90, "inParty": "True"}, {"id": "101EF83D", "name": "Nasir Spherelot", "worldId": 51, "job": 22, "level": 90, "inParty": "True"}]}'
+	log_p = open(r"E:\\works\\98.tmp\\Network_26800_20230301.2023.03.02.log",encoding = "utf-8")
+	pchg_data = open(r"E:\\works\\98.tmp\\20230301091033_ChangePrimaryPlayer_data_t.json")
+	PTchg_data = open(r"E:\\works\\98.tmp\\20230301095402_PartyChanged_data.json")
 	func_ChangePrimaryPlayer(json.load(pchg_data))
-	func_PartyChanged(json.loads(PTchg_data))
+	func_PartyChanged(json.load(PTchg_data))
 	for log_rawdata in log_p:
 		log_array = log_rawdata.split("|")
 		log_dict = { "rawLine":log_rawdata,"line":log_array }

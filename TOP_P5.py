@@ -1,26 +1,7 @@
 #import splatool
 import pandas
 import datetime
-import pyautogui
-import urllib.parse
-import requests
-
-def log_chk_00(message_dict,chk_message):
-	linedata = message_dict["line"]
-	if (linedata[0] == "00"):
-		if (linedata[4] == chk_message):
-			return True
-
-	return False
-
-def log_chk_get_buff_26(message_dict,buffID):
-	linedata = message_dict["line"]
-	if (linedata[0] == "26"):
-		if (linedata[2] == buffID):
-			a = 1
-			return True
-
-	return False
+import splatool_util
 
 class top_p5:
 	__PT_Data = pandas.DataFrame()
@@ -73,18 +54,18 @@ class top_p5:
 		print(str(message_dict["rawLine"]).replace("\n",""))
 		linedata = message_dict["line"]
 		# デュナミスバフ管理
-		if(log_chk_get_buff_26(message_dict,"D74")):
+		if(splatool_util.log_chk_get_buff_26(message_dict,"D74")):
 			self.__PT_Data.loc[self.__PT_Data["ID"] == linedata[7],"Dynamis"] += 1
 
-		if(log_chk_00(message_dict,"この力の増幅は、リミッターカットでは説明不能……。 ヒトの不可解な強さと関係が……？")):
+		if(splatool_util.log_chk_00(message_dict,"この力の増幅は、リミッターカットでは説明不能……。 ヒトの不可解な強さと関係が……？")):
 			self.interval_init()
 			self.state_sigma = 1
 
 		if (self.state_sigma == 1): # Display PRIORITY
-			if(log_chk_get_buff_26(message_dict,"D72")):
+			if(splatool_util.log_chk_get_buff_26(message_dict,"D72")):
 				self.world_cnt += 1
 				self.__PT_Data.loc[self.__PT_Data["ID"] == linedata[7],"world"] = "Near"
-			if(log_chk_get_buff_26(message_dict,"D73")):
+			if(splatool_util.log_chk_get_buff_26(message_dict,"D73")):
 				self.world_cnt += 1
 				self.__PT_Data.loc[self.__PT_Data["ID"] == linedata[7],"world"] = "Far"
 			if(self.world_cnt >= 2):
@@ -94,16 +75,14 @@ class top_p5:
 				pri_df = pri_df.reset_index(drop=True)
 				print("--------------------------------------------------")
 				print("SIGMA:PRIORITY")
+				disnumkey =""
 				for index, row in pri_df.iterrows():
 					print(str(index + 1) + ": " + row["name"])
 					#pyautogui.press(str(row["NUMKEY"]))
+					disnumkey = disnumkey + str(row["NUMKEY"]).replace("num","")
+				print("NUMKEY: " + disnumkey)
 				print("--------------------------------------------------")
 				self.state_sigma = 2
 		if (self.state_sigma == 2):
 			a = 1
 		return
-
-#d = {'elements': 'eyJOYW1lIjoidGVzdCIsInR5cGUiOjMsInJlZlkiOjI3LjAsInJhZGl1cyI6NTAuMCwiY29sb3IiOjE2Nzc3MjE4NTUsInJlZkFjdG9yTlBDTmFtZUlEIjo3Njk1LCJyZWZBY3RvckNvbXBhcmlzb25UeXBlIjo2LCJpbmNsdWRlUm90YXRpb24iOnRydWUsIm9ubHlWaXNpYmxlIjp0cnVlLCJBZGRpdGlvbmFsUm90YXRpb24iOjEuMzA4OTk2OX0=',"namespace":"extope"}
-#d = {"destroy":"extope"}
-#d_qs = urllib.parse.urlencode(d)
-#requests.post("http://127.0.0.1:47774?" + d_qs)
